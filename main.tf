@@ -30,7 +30,7 @@ resource "aws_key_pair" "deployer" {
 
 resource "aws_instance" "tfe" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   key_name      = aws_key_pair.deployer.key_name
 
   tags = {
