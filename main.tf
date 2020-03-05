@@ -24,7 +24,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "rumstattd-deployer"
+  key_name   = "rumstattd-d2"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHvMHx/bVcHPMeuppRYDYoocJB0AfuxPbEbEppd4OF2Tj2zS/kl2qwvDLvqTAXa3GDOitZymBz7DqKrSasp/9olHKkvRBSQELnC6Xev7qNqvQE1QS4KrKIQdL3bsfiNHTUtmVVkuj+ZQF0Gr+XmFL9pxsdWVjACtFzyh/WGee23ADNJN6QUB3eDNETLM7oHN2S7Hj+pGbiP8i21OeKoIQu4bz3KQrwL5C2hAqG8HO/R2mSJxgtisfiWO0GxhU+IZqbXBel2e4zWHsxUbe+PvY33PH9KgvmgzzVr/yNynp/MCKvsX1bKZyero1nsP4hNcS7sOft80i0V0AGQVHcwaY9 rumstattd@mac-rumstattd.local"
 }
 
