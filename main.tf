@@ -1,36 +1,42 @@
-# main.tf
-module "mymodule" {
-    # This repo
-    source            = "github.com/simesy/tf_lemp"
 
-    # Something short and pithy that is used for naming AWS resources.
-    identifier        = "test"
 
-    # Used as the AWS "Application ID"
-    application_id    = "Web-R-Us Apps"
+provider "aws" {
+  access_key = var.access_key
+  secret_key = var.secret_key
+  region     = var.region
+}
 
-    # A repo, branch, and (within that repo) an Ansible playbook path.
-    app_repo          = "https://github.com/simesy/tf_lemp"
-    app_playbook      = "webserver/playbook.yml"
-    app_checkout      = "master"
-    
-    # A public key (eg the contents of `cat ~/.ssh/id_rsa.pub`.
-    # This will be deployed into the nginx servers.
-    public_key        = "ssh-rsa ..."
 
-    # Whether to allow remote (SSH) access to the nginx servers.
-    # (Note currently working)
-    remote_access     = "true"
+data "aws_ami" "ubuntu" {
+  most_recent = true
 
-    # Defaults to 'insecurepass'
-    db_pass           = "somethingelse"
-    
-    # Other defaults.
-    # aws_region   = "ap-southeast-2"
-    # aws_az       = "ap-southeast-2a,ap-southeast-2b,ap-southeast-2c"
-    # aws_ami      = "ami-ba231ad9"
-    # asg_min      = "1"
-    # asg_max      = "2"
-    # asg_desired  = "1"
-    # asg_size     = "t1.micro"
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
+resource "aws_key_pair" "deployer" {
+  key_name   = "rumstattd-d2"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHvMHx/bVcHPMeuppRYDYoocJB0AfuxPbEbEppd4OF2Tj2zS/kl2qwvDLvqTAXa3GDOitZymBz7DqKrSasp/9olHKkvRBSQELnC6Xev7qNqvQE1QS4KrKIQdL3bsfiNHTUtmVVkuj+ZQF0Gr+XmFL9pxsdWVjACtFzyh/WGee23ADNJN6QUB3eDNETLM7oHN2S7Hj+pGbiP8i21OeKoIQu4bz3KQrwL5C2hAqG8HO/R2mSJxgtisfiWO0GxhU+IZqbXBel2e4zWHsxUbe+PvY33PH9KgvmgzzVr/yNynp/MCKvsX1bKZyero1nsP4hNcS7sOft80i0V0AGQVHcwaY9 rumstattd@mac-rumstattd.local"
+}
+
+
+
+resource "aws_instance" "tfe" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t2.small"
+  key_name      = aws_key_pair.deployer.key_name
+  security_groups = [ rumstattd-tfe-outbound-allow, rumstatttd-tfe-ec2-allow ]
+
+  tags = {
+    Name = "RickUmstattd TFE"
+  }
 }
