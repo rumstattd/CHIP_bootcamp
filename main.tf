@@ -34,7 +34,6 @@ resource "aws_instance" "tfe" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.small"
   key_name      = aws_key_pair.deployer.key_name
-  security_groups = [ rumstattd-tfe-outbound-allow, rumstatttd-tfe-ec2-allow ]
 
   tags = {
     Name = "RickUmstattd TFE"
